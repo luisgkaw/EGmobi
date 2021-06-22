@@ -70,8 +70,19 @@ struct tag_date
     uint8_t         min;
     uint8_t         sec;
     uint8_t         weekday;
+    unsigned int    set:1;
 };
 extern struct tag_date date[256];
+
+/*---VETORES DE DATAS---//
+ USADO PARA ARMAZENAR INÍCIO E FINAL DE CARREGAMENTO DE
+ CADA POWERTAG, MAS SOMENTE O POWERTAG LINK TEM A INFORMAÇÃO.
+ 
+ 1 A 247 - POWERTAGS
+ 255 - POWERTAG LINK
+ 254 - SISTEMA
+ 253 - TEMPORARIO
+ */
 
 struct tag_alarms
 {
@@ -85,5 +96,18 @@ struct tag_alarms
     unsigned int    low_battery:1;
 };
 extern struct tag_alarms alarms[256];
+
+struct tag_relay
+{
+    unsigned int    kron_state:1;
+    unsigned int    board:1;
+};
+extern struct tag_relay relay[17];
+
+struct tag_flags
+{
+    unsigned int    boot:1;
+};
+extern struct tag_flags flags;
 
 #endif /* global_variables_h */

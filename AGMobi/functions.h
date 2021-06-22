@@ -381,7 +381,7 @@ void reset_dout(int slave_num, int port_number)
     sleep(1);
 }
 
-int read_digital_status(int slave_num, int in_out, int port_number)
+int read_digital_status(int slave_num, int in_out, int port_number) //LEITURA DAS SAIDAS E ENTRADAS DIGITAIS DO KONECT
 {
     int rd;
     int addr=0;
@@ -425,21 +425,25 @@ int read_digital_status(int slave_num, int in_out, int port_number)
     
     if(tab_reg[addr] == 1)
     {
-        if(in_out == 0) printf("A saída %d está ligada\n", port_number);
-        else            printf("A entrada %d está ligada\n", port_number);
+        if(in_out == 0) printf("A saída %d do Kron está ligada\n", port_number);
+        else            printf("A entrada %d do Kron está ligada\n", port_number);
+        
+        relay[port_number].kron_state = 1;
         
         return 1;
     }
     else
     {
-        if(in_out == 0) printf("A saída %d está desligada\n", port_number);
-        else            printf("A entrada %d está desligada\n", port_number);
+        if(in_out == 0) printf("A saída %d do Kron está desligada\n", port_number);
+        else            printf("A entrada %d do Kron está desligada\n", port_number);
+        
+        relay[port_number].kron_state = 0;
             
         return 0;
     }
 }
 
-int reset_partial_energy_PTL(int slave_num, uint16_t reg_addr)
+int reset_partial_energy_PTL(int slave_num, uint16_t reg_addr) //RESETA ENERGIA PARCIAL DO POWERTAG
 {
     int rd;
     int i=0;
@@ -485,7 +489,7 @@ int reset_partial_energy_PTL(int slave_num, uint16_t reg_addr)
     return rd;
 }
 
-int get_system_date(void)
+int get_system_date(void) //CAPTURA A DATA DO SISTEMA (RASP, LINUX, MAC, WIN, ETC.)
 {
     char buf[BUF_LEN] = {0};
         
@@ -511,18 +515,20 @@ int get_system_date(void)
     
     puts(buf);
     
-    date[255].year    = ptm->tm_year - 100;
-    date[255].month   = ptm->tm_mon + 1;
-    date[255].day     = ptm->tm_mday;
-    date[255].hour    = ptm->tm_hour;
-    date[255].min     = ptm->tm_min;
-    date[255].sec     = ptm->tm_sec;
-    date[255].weekday = ptm->tm_wday;
+    date[254].year    = ptm->tm_year - 100;
+    date[254].month   = ptm->tm_mon + 1;
+    date[254].day     = ptm->tm_mday;
+    date[254].hour    = ptm->tm_hour;
+    date[254].min     = ptm->tm_min;
+    date[254].sec     = ptm->tm_sec;
+    date[254].weekday = ptm->tm_wday;
+    
+    printf("Data do sistema: %02d/%02d/%02d \nHora do sistema: %d:%02d\n", date[254].day, date[254].month, date[254].year, date[254].hour, date[254].min);
     
     return 0;
 }
 
-int set_PT_date(void)
+int set_PT_date(void) //SETA A DATA DO POWERTAG CO BASE NO VALOR SALVO NAS VARIAVEIS DA ESTRUTURA "DATE"
 {
     int rd;
     uint16_t ano;
@@ -546,10 +552,12 @@ int set_PT_date(void)
 
     modbus_set_slave(ctx, 255);
     
-    ano      = date[255].year;
-    mes_dia  = concat_816(date[255].month, date[255].day);
-    hora_min = concat_816(date[255].hour, date[255].min);
-    milisec  = date[255].sec * 1000;
+    //COPIA VALORES DO SISTEMA PARA AS TABELA DO FRAME
+    
+    ano      = date[254].year;
+    mes_dia  = concat_816(date[254].month, date[254].day);
+    hora_min = concat_816(date[254].hour, date[254].min);
+    milisec  = date[254].sec * 1000;
     
     tab_reg[0] = ano;
     tab_reg[1] = mes_dia;
@@ -568,7 +576,7 @@ int set_PT_date(void)
     return 0;
 }
 
-int get_PT_date(int slave_num)
+int get_PT_date(int slave_num) //REQUISITA A DATA CONFIGURADA NO POWERTAG LINK
 {
     int rd;
     uint16_t tab_reg[4];
@@ -608,7 +616,7 @@ int get_PT_date(int slave_num)
     date[slave_num].min = tab_reg[2];
     if(date[slave_num].min > 0x3b) date[slave_num].min = 0x3f & date[slave_num].min;
     
-    printf("Data: %02d/%02d/%02d \nHora: %d:%02d\n", date[slave_num].day, date[slave_num].month, date[slave_num].year, date[slave_num].hour, date[slave_num].min);
+    printf("Data do PowerTag: %02d/%02d/%02d \nHora do PowerTag: %d:%02d\n", date[slave_num].day, date[slave_num].month, date[slave_num].year, date[slave_num].hour, date[slave_num].min);
     
     modbus_close(ctx);
     modbus_free(ctx);
@@ -616,7 +624,7 @@ int get_PT_date(int slave_num)
     return 0;
 }
 
-int open_relay(int slave_num, int relay_addr)
+int open_relay(int slave_num, int relay_addr) //COMANDO PARA ABERTURA DE RELÉ DA PLACA DE RELÉS
 {
     int rd;
     
@@ -648,7 +656,7 @@ int open_relay(int slave_num, int relay_addr)
     return 0;
 }
 
-int close_relay(int slave_num, int relay_addr)
+int close_relay(int slave_num, int relay_addr) //COMANDO PARA FECHAMENTO DE RELÉ DA PLACA DE RELÉS
 {
     int rd;
     
@@ -679,12 +687,10 @@ int close_relay(int slave_num, int relay_addr)
     return 0;
 }
 
-int read_relay_status(int slave_num, uint32_t relay_addr)
+int read_relay_status(int slave_num, uint32_t relay_addr) //LE STATUS DO RELE 
 {
-    int i=0;
     int rd;
-    uint16_t reg_size=0x0001;
-    uint16_t tab_reg[16];
+    uint16_t tab_reg[1];
     
     modbus_t *ctx;
     
@@ -701,27 +707,33 @@ int read_relay_status(int slave_num, uint32_t relay_addr)
 
     modbus_set_slave(ctx, slave_num);
     
-    rd = modbus_read_registers(ctx, relay_addr, reg_size, tab_reg); //LE INPUT REGISTER
+    rd = modbus_read_registers(ctx, relay_addr, 0x0001, tab_reg); //LE INPUT REGISTER
     if (rd == -1) {
         fprintf(stderr, "%s\n", modbus_strerror(errno));
-    }
-    
-    for (i=0; i < rd; i++) {
-        printf("reg[%d]=%d (0x%X)\n", i, tab_reg[i], tab_reg[i]);
     }
     sleep(1);
     
     modbus_close(ctx);
     modbus_free(ctx);
     
-    return 0;
+    if(tab_reg[0] == 1)
+    {
+        relay[relay_addr].board = 1;
+        printf("A saída %d da placa está ligada\n", relay_addr);
+    }
+    else
+    {
+        relay[relay_addr].board = 0;
+        printf("A saída %d da placa está desligada\n", relay_addr);
+    }
+    
+    return tab_reg[0];
 }
 
-int read_all_relay_status(int slave_num)
+int read_all_relay_status(int slave_num) //LE O STATUS DE TODOS OS RELES DE UMA VEZ
 {
     int i=0;
     int rd;
-    uint16_t reg_size=0x0001;
     uint16_t tab_reg[16];
     
     modbus_t *ctx;
@@ -755,7 +767,7 @@ int read_all_relay_status(int slave_num)
     return 0;
 }
 
-int get_PT_alarm(int slave_num)
+int get_PT_alarm(int slave_num) //
 {
     int i=0;
     int rd;
@@ -781,14 +793,19 @@ int get_PT_alarm(int slave_num)
     if (rd == -1) {
         fprintf(stderr, "%s\n", modbus_strerror(errno));
     }
-    
-    for (i=0; i < rd; i++) {
-        printf("reg[%d]=%d (0x%X)\n", i, tab_reg[i], tab_reg[i]);
-    }
     sleep(1);
     
     modbus_close(ctx);
     modbus_free(ctx);
+    
+    if(tab_reg[0] & PT_VOLTAGE_LOSS)    printf("ALARME PT %d: Perda de tensão\n", slave_num);
+    if(tab_reg[0] & PT_OL_AT_VL)        printf("ALARME PT %d: Sobrecarga na perda de tensão\n", slave_num);
+    if(tab_reg[0] & PT_OL_45)           printf("ALARME PT %d: Carga acima de 45% \n", slave_num);
+    if(tab_reg[0] & PT_ZERO_CURRENT)    printf("ALARME PT %d: Carga desligada\n", slave_num);
+    if(tab_reg[0] & PT_OV_120)          printf("ALARME PT %d: Sobretensão acima de 120% \n", slave_num);
+    if(tab_reg[0] & PT_UV_80)           printf("ALARME PT %d: Subtensão abaixo de 80% \n", slave_num);
+    if(tab_reg[0] & PT_LOW_BAT)         printf("ALARME PT %d: Bateria baixa\n", slave_num);
+    if(tab_reg[0] == 0)                 printf("PT %d: Sem alarmes\n", slave_num);
     
     return tab_reg[0];
 }

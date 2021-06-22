@@ -17,28 +17,62 @@
 #include "functions.h"
 #include "global_variables.h"
 #include "constantes.h"
+#include "boot.h"
 
 int main(void) {
     
+    if(!flags.boot)
+    {
+        boot_sec();
+    }
     
-    get_system_date();
-    set_PT_date();
-    get_PT_date(255);
+    read_digital_status(1, 0, 1); //SLAVE / 0 - OUT e 1 - IN / NUM DA SAÍDA
+    
+    
+    if(relay[1].kron_state) reset_dout(1,1);
+    else                    set_dout(1, 1);
+    
+    read_digital_status(1, 0, 1); //SLAVE / 0 - OUT e 1 - IN / NUM DA SAÍDA
+    
+    read_relay_status(2,RELAY_CH1);
+    
+    if(relay[RELAY_CH1].board) open_relay(2,RELAY_CH1);
+    else                       close_relay(2, RELAY_CH1);
+    
+    read_relay_status(2,RELAY_CH1);
     
     while(1)
     {
+        if(!date[255].set)
+        {
+            get_system_date();
+            get_PT_date(255);
+            
+            if(date[254].year  == date[255].year    &&
+               date[254].month == date[255].month   &&
+               date[254].day   == date[255].day     &&
+               date[254].hour  == date[255].hour    &&
+               date[254].min   == date[255].min)
+            {
+                date[255].set = 1;
+            }
+            else
+            {
+                set_PT_date();
+                date[255].set = 1;
+            }
+        }
+        
         alarms[2].state = get_PT_alarm(2);
-        
-        
-        
+        /*
         if(alarms[2].state & PT_ZERO_CURRENT)
         {
             get_PT_date(2);
-            close_relay(1,RELAY_CH1);
+            close_relay(2,RELAY_CH1);
         }
         else
         {
-            open_relay(1,RELAY_CH1);
+            open_relay(2,RELAY_CH1);
         }
 
     /*
