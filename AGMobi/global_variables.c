@@ -9,3 +9,4 @@ struct tag_alarms   alarms[256];
 struct tag_relay    relay[17];
 struct tag_flags    flags;
 struct tag_charge   charge[247];
+struct tag_cnt      cnt;

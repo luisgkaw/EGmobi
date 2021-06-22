@@ -8,6 +8,16 @@
 #ifndef functions_h
 #define functions_h
 
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <modbus.h>
+#include <errno.h>
+#include <math.h>
+#include <unistd.h>
+#include <time.h>
+#include <signal.h>
+#include "functions.h"
 #include "global_variables.h"
 #include "constantes.h"
 
@@ -125,6 +135,7 @@ static inline float read_in_reg(int slave_num, uint16_t reg_addr)
     rd = modbus_read_input_registers(ctx, reg_addr, reg_size, tab_reg); //LE INPUT REGISTER
     if (rd == -1) {
         fprintf(stderr, "%s\n", modbus_strerror(errno));
+        return -1;
     }
     
     for (i=0; i < rd; i++) {
@@ -238,6 +249,7 @@ static inline float read_in_reg_PTL(int slave_num, uint16_t reg_addr) //LER REGI
     if (modbus_connect(ctx) == -1) {
         fprintf(stderr, "Connection failed: %s\n", modbus_strerror(errno));
         modbus_free(ctx);
+        return -1;
     }
 
     modbus_set_slave(ctx, slave_num);
@@ -261,12 +273,13 @@ static inline float read_in_reg_PTL(int slave_num, uint16_t reg_addr) //LER REGI
 //    rd = modbus_read_input_registers(ctx, reg_addr, 0x0002, tab_reg); //LE INPUT REGISTER
     if (rd == -1) {
         fprintf(stderr, "%s\n", modbus_strerror(errno));
+        return -1;
     }
     
-    for (i=0; i < rd; i++) {
+/*    for (i=0; i < rd; i++) {
         printf("reg[%d]=%d (0x%X)\n", i, tab_reg[i], tab_reg[i]);
     }
-    sleep(1);
+*/    sleep(1);
     
     modbus_close(ctx);
     modbus_free(ctx);
@@ -289,17 +302,17 @@ static inline float read_in_reg_PTL(int slave_num, uint16_t reg_addr) //LER REGI
     if (reg_size == 0x0004)
     {
         result_concat1 = concat_1632(tab_reg[0], tab_reg[1]);
-        printf("result_concat1: 0x%X (%d)\n", result_concat1, result_concat1);
+//        printf("result_concat1: 0x%X (%d)\n", result_concat1, result_concat1);
        
         result_concat2 = concat_1632(tab_reg[2], tab_reg[3]);
-        printf("result_concat2: 0x%X (%d)\n", result_concat2, result_concat2);
+//        printf("result_concat2: 0x%X (%d)\n", result_concat2, result_concat2);
     
         result_concat64 = concat_3264(result_concat1, result_concat2);
-        printf("result_concat64: 0x%llX\n", result_concat64);
+//        printf("result_concat64: 0x%llX\n", result_concat64);
         
-        result_float = result_concat64 * 0.001;
+//        result_float = result_concat64 * 0.001;
 
-        return result_float;
+        return result_concat64;
     }
     else
     if(reg_size == 1)
@@ -350,6 +363,7 @@ static inline void set_dout(int slave_num, int port_number)
     rd = modbus_write_bit(ctx, addr, 0x0001);
     if (rd == -1) {
         fprintf(stderr, "%s\n", modbus_strerror(errno));
+        return -1;
     }
     sleep(1);
 }
@@ -379,6 +393,7 @@ static inline void reset_dout(int slave_num, int port_number)
     rd = modbus_write_bit(ctx, addr, 0x0000);
     if (rd == -1) {
         fprintf(stderr, "%s\n", modbus_strerror(errno));
+        return -1;
     }
     sleep(1);
 }
@@ -406,6 +421,7 @@ static inline int read_digital_status(int slave_num, int in_out, int port_number
     rd = modbus_read_input_bits(ctx, 0x0000, 0x0005, tab_reg);
     if (rd == -1) {
         fprintf(stderr, "%s\n", modbus_strerror(errno));
+        return -1;
     }
 /*    for (i=0; i < rd; i++) {
         printf("reg[%d]=%d (0x%X)\n", i, tab_reg[i], tab_reg[i]);
@@ -482,6 +498,7 @@ static inline int reset_partial_energy_PTL(int slave_num, uint16_t reg_addr) //R
     rd = modbus_write_registers(ctx, reg_addr, reg_size, tab_reg); //LE INPUT REGISTER
     if (rd == -1) {
         fprintf(stderr, "%s\n", modbus_strerror(errno));
+        return -1;
     }
     sleep(1);
     
@@ -569,6 +586,7 @@ static inline int set_PT_date(void) //SETA A DATA DO POWERTAG CO BASE NO VALOR S
     rd = modbus_write_registers(ctx, PT_DATE, 0x0004, tab_reg); //ANO
     if (rd == -1) {
         fprintf(stderr, "%s\n", modbus_strerror(errno));
+        return -1;
     }
     sleep(1);
     
@@ -601,6 +619,7 @@ static inline int get_PT_date(int slave_num) //REQUISITA A DATA CONFIGURADA NO P
     rd = modbus_read_input_registers(ctx, PT_DATE, 0x0004, tab_reg); //ANO
     if (rd == -1) {
         fprintf(stderr, "%s\n", modbus_strerror(errno));
+        return -1;
     }
     sleep(1);
     
@@ -618,7 +637,7 @@ static inline int get_PT_date(int slave_num) //REQUISITA A DATA CONFIGURADA NO P
     date[slave_num].min = tab_reg[2];
     if(date[slave_num].min > 0x3b) date[slave_num].min = 0x3f & date[slave_num].min;
     
-    printf("Data do PowerTag: %02d/%02d/%02d \nHora do PowerTag: %d:%02d\n", date[slave_num].day, date[slave_num].month, date[slave_num].year, date[slave_num].hour, date[slave_num].min);
+//    printf("Data do PowerTag: %02d/%02d/%02d \nHora do PowerTag: %d:%02d\n", date[slave_num].day, date[slave_num].month, date[slave_num].year, date[slave_num].hour, date[slave_num].min);
     
     modbus_close(ctx);
     modbus_free(ctx);
@@ -649,6 +668,7 @@ static inline int open_relay(int slave_num, int relay_addr) //COMANDO PARA ABERT
     rd = modbus_write_register(ctx, relay_addr, 0x0200); //LE INPUT REGISTER
     if (rd == -1) {
         fprintf(stderr, "%s\n", modbus_strerror(errno));
+        return -1;
     }
     sleep(1);
     
@@ -680,6 +700,7 @@ static inline int close_relay(int slave_num, int relay_addr) //COMANDO PARA FECH
     rd = modbus_write_register(ctx, relay_addr, 0x0100); //LE INPUT REGISTER
     if (rd == -1) {
         fprintf(stderr, "%s\n", modbus_strerror(errno));
+        return -1;
     }
     sleep(1);
     
@@ -712,6 +733,7 @@ static inline int read_relay_status(int slave_num, uint32_t relay_addr) //LE STA
     rd = modbus_read_registers(ctx, relay_addr, 0x0001, tab_reg); //LE INPUT REGISTER
     if (rd == -1) {
         fprintf(stderr, "%s\n", modbus_strerror(errno));
+        return -1;
     }
     sleep(1);
     
@@ -756,6 +778,7 @@ static inline int read_all_relay_status(int slave_num) //LE O STATUS DE TODOS OS
     rd = modbus_read_registers(ctx, 0x0001, 0x0010, tab_reg); //LE INPUT REGISTER
     if (rd == -1) {
         fprintf(stderr, "%s\n", modbus_strerror(errno));
+        return -1;
     }
     
     for (i=0; i < rd; i++) {
@@ -794,20 +817,34 @@ static inline int get_PT_alarm(int slave_num) //
     rd = modbus_read_registers(ctx, PT_ALARMS, reg_size, tab_reg); //LE INPUT REGISTER
     if (rd == -1) {
         fprintf(stderr, "%s\n", modbus_strerror(errno));
+        return -1;
     }
     sleep(1);
     
     modbus_close(ctx);
     modbus_free(ctx);
     
-    if(tab_reg[0] & PT_VOLTAGE_LOSS)    printf("ALARME PT %d: Perda de tensão\n", slave_num);
-    if(tab_reg[0] & PT_OL_AT_VL)        printf("ALARME PT %d: Sobrecarga na perda de tensão\n", slave_num);
-    if(tab_reg[0] & PT_OL_45)           printf("ALARME PT %d: Carga acima de 45% \n", slave_num);
-    if(tab_reg[0] & PT_ZERO_CURRENT)    printf("ALARME PT %d: Carga desligada\n", slave_num);
-    if(tab_reg[0] & PT_OV_120)          printf("ALARME PT %d: Sobretensão acima de 120% \n", slave_num);
-    if(tab_reg[0] & PT_UV_80)           printf("ALARME PT %d: Subtensão abaixo de 80% \n", slave_num);
-    if(tab_reg[0] & PT_LOW_BAT)         printf("ALARME PT %d: Bateria baixa\n", slave_num);
-    if(tab_reg[0] == 0)                 printf("PT %d: Sem alarmes\n", slave_num);
+    if(tab_reg[slave_num] == 0xFFFF)
+        {
+        printf("PT %d retornou um valor inválido\n\n", slave_num);
+        alarms[slave_num].previous = tab_reg[0];
+        }
+    else
+        {
+        if(alarms[slave_num].previous != tab_reg[0])
+            {
+            if(tab_reg[0] & PT_VOLTAGE_LOSS)    printf("ALARME PT %d: Perda de tensão\n\n", slave_num);
+            if(tab_reg[0] & PT_OL_AT_VL)        printf("ALARME PT %d: Sobrecarga na perda de tensão\n\n", slave_num);
+            if(tab_reg[0] & PT_OL_45)           printf("ALARME PT %d: Carga acima de 45%%\n\n", slave_num);
+            if(tab_reg[0] & PT_ZERO_CURRENT)    printf("ALARME PT %d: Carga desligada\n\n", slave_num);
+            if(tab_reg[0] & PT_OV_120)          printf("ALARME PT %d: Sobretensão acima de 120%%\n\n", slave_num);
+            if(tab_reg[0] & PT_UV_80)           printf("ALARME PT %d: Subtensão abaixo de 80%%\n\n", slave_num);
+            if(tab_reg[0] & PT_LOW_BAT)         printf("ALARME PT %d: Bateria baixa\n\n", slave_num);
+            if(tab_reg[0] == 0)                 printf("PT %d: Sem alarmes\n\n", slave_num);
+            
+            alarms[slave_num].previous = tab_reg[0];
+            }
+        }
     
     return tab_reg[0];
 }

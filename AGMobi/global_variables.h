@@ -39,9 +39,10 @@ struct tag_measure
     unsigned char   serial_num;
     unsigned int    date;
     unsigned int    pot;
-    unsigned int    energy;
+    uint64_t        energy;
     unsigned int    voltage;
     unsigned int    current;
+    uint64_t        start_energy;
 };
 extern struct tag_measure measure[247];
 
@@ -70,6 +71,9 @@ struct tag_date
     uint8_t         min;
     uint8_t         sec;
     uint8_t         weekday;
+    uint8_t         start_day;
+    uint8_t         start_hour;
+    uint8_t         start_min;
     unsigned int    set:1;
 };
 extern struct tag_date date[256];
@@ -94,6 +98,7 @@ struct tag_alarms
     unsigned int    overvoltage_120:1;
     unsigned int    undervoltage_80:1;
     unsigned int    low_battery:1;
+    unsigned int    previous;
 };
 extern struct tag_alarms alarms[256];
 
@@ -113,8 +118,16 @@ extern struct tag_flags flags;
 struct tag_charge
 {
     unsigned int    state:1;
+    unsigned int    duration;
+    uint64_t        energy;
 };
 extern struct tag_charge charge[247];
+
+struct tag_cnt
+{
+    unsigned int    powertag;
+};
+extern struct tag_cnt cnt;
 
 
 #endif /* global_variables_h */

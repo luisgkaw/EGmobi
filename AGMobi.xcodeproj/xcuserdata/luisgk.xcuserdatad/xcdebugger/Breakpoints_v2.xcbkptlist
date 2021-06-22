@@ -7,48 +7,48 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "B8FF4BF4-DE1B-4E2F-BEDA-C29DDD0C9350"
+            uuid = "0F38BA59-1A28-49E9-A0C0-5D0304BF9B06"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "AGMobi/functions.h"
+            filePath = "AGMobi/rot_charge.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "622"
-            endingLineNumber = "622"
-            landmarkName = "get_PT_date(slave_num)"
+            startingLineNumber = "47"
+            endingLineNumber = "47"
+            landmarkName = "rot_charge()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "F4A28FCD-C513-48E8-AA4B-5F46D73F9AA4"
+            uuid = "A1643A36-2C19-4CE4-B0D5-6489D646B7E4"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "AGMobi/functions.h"
+            filePath = "AGMobi/rot_charge.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "625"
-            endingLineNumber = "625"
-            landmarkName = "get_PT_date(slave_num)"
+            startingLineNumber = "61"
+            endingLineNumber = "61"
+            landmarkName = "rot_charge()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "1FC5DE70-9851-4C56-BED8-6C69C5C83B4F"
-            shouldBeEnabled = "Yes"
+            uuid = "A4303468-2FB0-4688-B91E-258D9C3A40D3"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "AGMobi/main.c"
+            filePath = "AGMobi/functions.h"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "24"
-            endingLineNumber = "24"
-            landmarkName = "main()"
+            startingLineNumber = "826"
+            endingLineNumber = "826"
+            landmarkName = "get_PT_alarm(slave_num)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>

@@ -14,7 +14,9 @@
 
 void boot_sec(void)
 {
+    int i;
     date[255].set = 0;
+    for(i=0;i<247;i++) charge[i].state = 0;
     flags.boot = 1;
 }
 
