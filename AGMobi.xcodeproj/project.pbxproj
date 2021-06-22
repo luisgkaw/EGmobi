@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		D403064C26686E69006E506B /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = D403064B26686E69006E506B /* main.c */; };
+		D4C00A0426824FA600F96026 /* rot_charge.c in Sources */ = {isa = PBXBuildFile; fileRef = D4C00A0326824FA600F96026 /* rot_charge.c */; };
 		D4DFC9DC266A744300EA3057 /* global_variables.c in Sources */ = {isa = PBXBuildFile; fileRef = D4DFC9DB266A744300EA3057 /* global_variables.c */; };
 		D4DFC9DF266A762600EA3057 /* constantes.c in Sources */ = {isa = PBXBuildFile; fileRef = D4DFC9DD266A762600EA3057 /* constantes.c */; };
 /* End PBXBuildFile section */
@@ -29,6 +30,7 @@
 		D403064B26686E69006E506B /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		D403065226687887006E506B /* functions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = functions.h; sourceTree = "<group>"; };
 		D4C009FA2682231D00F96026 /* boot.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = boot.h; sourceTree = "<group>"; };
+		D4C00A0326824FA600F96026 /* rot_charge.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = rot_charge.c; sourceTree = "<group>"; };
 		D4DFC9DA266A744300EA3057 /* global_variables.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = global_variables.h; sourceTree = "<group>"; };
 		D4DFC9DB266A744300EA3057 /* global_variables.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = global_variables.c; sourceTree = "<group>"; };
 		D4DFC9DD266A762600EA3057 /* constantes.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = constantes.c; sourceTree = "<group>"; };
@@ -72,6 +74,7 @@
 				D403064B26686E69006E506B /* main.c */,
 				D403065226687887006E506B /* functions.h */,
 				D4C009FA2682231D00F96026 /* boot.h */,
+				D4C00A0326824FA600F96026 /* rot_charge.c */,
 			);
 			path = AGMobi;
 			sourceTree = "<group>";
@@ -135,6 +138,7 @@
 				D4DFC9DC266A744300EA3057 /* global_variables.c in Sources */,
 				D4DFC9DF266A762600EA3057 /* constantes.c in Sources */,
 				D403064C26686E69006E506B /* main.c in Sources */,
+				D4C00A0426824FA600F96026 /* rot_charge.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

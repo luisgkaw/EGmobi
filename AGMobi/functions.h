@@ -11,28 +11,30 @@
 #include "global_variables.h"
 #include "constantes.h"
 
-uint16_t concat_816(uint8_t a, uint8_t b) //CONCATENA DUAS VARIAVEIS 16-BIT EM UMA DE 32-BIT
+void rot_charge(void);
+
+static inline uint16_t concat_816(uint8_t a, uint8_t b) //CONCATENA DUAS VARIAVEIS 16-BIT EM UMA DE 32-BIT
 {
     uint16_t c = (uint16_t) a << 8 | b;
 
     return c;
 }
 
-uint32_t concat_1632(uint16_t a, uint16_t b) //CONCATENA DUAS VARIAVEIS 16-BIT EM UMA DE 32-BIT
+static inline uint32_t concat_1632(uint16_t a, uint16_t b) //CONCATENA DUAS VARIAVEIS 16-BIT EM UMA DE 32-BIT
 {
     uint32_t c = (uint32_t) a << 16 | b;
 
     return c;
 }
 
-uint64_t concat_3264(uint32_t a, uint32_t b) //CONCATENA DUAS VARIAVEIS 32-BIT EM UMA DE 64-BIT
+static inline uint64_t concat_3264(uint32_t a, uint32_t b) //CONCATENA DUAS VARIAVEIS 32-BIT EM UMA DE 64-BIT
 {
     uint64_t c = (uint64_t) a << 32 | b;
 
     return c;
 }
 
-uint32_t conv_floatinv_ieee754(uint32_t a) //CONVERTE VARIAVEL EM FORMATO FLOAT INVERT PARA IEEE 754 E VICE-VERSA
+static inline uint32_t conv_floatinv_ieee754(uint32_t a) //CONVERTE VARIAVEL EM FORMATO FLOAT INVERT PARA IEEE 754 E VICE-VERSA
 {
     int i = 0;
     uint8_t b = 0;
@@ -47,7 +49,7 @@ uint32_t conv_floatinv_ieee754(uint32_t a) //CONVERTE VARIAVEL EM FORMATO FLOAT 
     return c;
 }
 
-float conv_dec_f(uint32_t a)//CONVERTE VARIAVEL PARA FLOAT DECIMAL
+static inline float conv_dec_f(uint32_t a)//CONVERTE VARIAVEL PARA FLOAT DECIMAL
 {
     int sign;
     int mantissa;
@@ -62,7 +64,7 @@ float conv_dec_f(uint32_t a)//CONVERTE VARIAVEL PARA FLOAT DECIMAL
     return result;
 }
 
-float read_in_reg(int slave_num, uint16_t reg_addr)
+static inline float read_in_reg(int slave_num, uint16_t reg_addr)
 {
     int i=0;
     int rd;
@@ -185,7 +187,7 @@ float read_in_reg(int slave_num, uint16_t reg_addr)
     }
 }
 
-float read_in_reg_PTL(int slave_num, uint16_t reg_addr) //LER REGISTRO DO POWERTAGLINK
+static inline float read_in_reg_PTL(int slave_num, uint16_t reg_addr) //LER REGISTRO DO POWERTAGLINK
 {
     int i=0;
     int rd;
@@ -323,7 +325,7 @@ float read_in_reg_PTL(int slave_num, uint16_t reg_addr) //LER REGISTRO DO POWERT
     }
 }
 
-void set_dout(int slave_num, int port_number)
+static inline void set_dout(int slave_num, int port_number)
 {
     int rd;
     int addr=0;
@@ -352,7 +354,7 @@ void set_dout(int slave_num, int port_number)
     sleep(1);
 }
 
-void reset_dout(int slave_num, int port_number)
+static inline void reset_dout(int slave_num, int port_number)
 {
     int rd;
     int addr=0;
@@ -381,7 +383,7 @@ void reset_dout(int slave_num, int port_number)
     sleep(1);
 }
 
-int read_digital_status(int slave_num, int in_out, int port_number) //LEITURA DAS SAIDAS E ENTRADAS DIGITAIS DO KONECT
+static inline int read_digital_status(int slave_num, int in_out, int port_number) //LEITURA DAS SAIDAS E ENTRADAS DIGITAIS DO KONECT
 {
     int rd;
     int addr=0;
@@ -443,7 +445,7 @@ int read_digital_status(int slave_num, int in_out, int port_number) //LEITURA DA
     }
 }
 
-int reset_partial_energy_PTL(int slave_num, uint16_t reg_addr) //RESETA ENERGIA PARCIAL DO POWERTAG
+static inline int reset_partial_energy_PTL(int slave_num, uint16_t reg_addr) //RESETA ENERGIA PARCIAL DO POWERTAG
 {
     int rd;
     int i=0;
@@ -489,7 +491,7 @@ int reset_partial_energy_PTL(int slave_num, uint16_t reg_addr) //RESETA ENERGIA 
     return rd;
 }
 
-int get_system_date(void) //CAPTURA A DATA DO SISTEMA (RASP, LINUX, MAC, WIN, ETC.)
+static inline int get_system_date(void) //CAPTURA A DATA DO SISTEMA (RASP, LINUX, MAC, WIN, ETC.)
 {
     char buf[BUF_LEN] = {0};
         
@@ -528,7 +530,7 @@ int get_system_date(void) //CAPTURA A DATA DO SISTEMA (RASP, LINUX, MAC, WIN, ET
     return 0;
 }
 
-int set_PT_date(void) //SETA A DATA DO POWERTAG CO BASE NO VALOR SALVO NAS VARIAVEIS DA ESTRUTURA "DATE"
+static inline int set_PT_date(void) //SETA A DATA DO POWERTAG CO BASE NO VALOR SALVO NAS VARIAVEIS DA ESTRUTURA "DATE"
 {
     int rd;
     uint16_t ano;
@@ -576,7 +578,7 @@ int set_PT_date(void) //SETA A DATA DO POWERTAG CO BASE NO VALOR SALVO NAS VARIA
     return 0;
 }
 
-int get_PT_date(int slave_num) //REQUISITA A DATA CONFIGURADA NO POWERTAG LINK
+static inline int get_PT_date(int slave_num) //REQUISITA A DATA CONFIGURADA NO POWERTAG LINK
 {
     int rd;
     uint16_t tab_reg[4];
@@ -624,7 +626,7 @@ int get_PT_date(int slave_num) //REQUISITA A DATA CONFIGURADA NO POWERTAG LINK
     return 0;
 }
 
-int open_relay(int slave_num, int relay_addr) //COMANDO PARA ABERTURA DE RELÉ DA PLACA DE RELÉS
+static inline int open_relay(int slave_num, int relay_addr) //COMANDO PARA ABERTURA DE RELÉ DA PLACA DE RELÉS
 {
     int rd;
     
@@ -656,7 +658,7 @@ int open_relay(int slave_num, int relay_addr) //COMANDO PARA ABERTURA DE RELÉ D
     return 0;
 }
 
-int close_relay(int slave_num, int relay_addr) //COMANDO PARA FECHAMENTO DE RELÉ DA PLACA DE RELÉS
+static inline int close_relay(int slave_num, int relay_addr) //COMANDO PARA FECHAMENTO DE RELÉ DA PLACA DE RELÉS
 {
     int rd;
     
@@ -687,7 +689,7 @@ int close_relay(int slave_num, int relay_addr) //COMANDO PARA FECHAMENTO DE REL�
     return 0;
 }
 
-int read_relay_status(int slave_num, uint32_t relay_addr) //LE STATUS DO RELE 
+static inline int read_relay_status(int slave_num, uint32_t relay_addr) //LE STATUS DO RELE
 {
     int rd;
     uint16_t tab_reg[1];
@@ -730,7 +732,7 @@ int read_relay_status(int slave_num, uint32_t relay_addr) //LE STATUS DO RELE
     return tab_reg[0];
 }
 
-int read_all_relay_status(int slave_num) //LE O STATUS DE TODOS OS RELES DE UMA VEZ
+static inline int read_all_relay_status(int slave_num) //LE O STATUS DE TODOS OS RELES DE UMA VEZ
 {
     int i=0;
     int rd;
@@ -767,7 +769,7 @@ int read_all_relay_status(int slave_num) //LE O STATUS DE TODOS OS RELES DE UMA 
     return 0;
 }
 
-int get_PT_alarm(int slave_num) //
+static inline int get_PT_alarm(int slave_num) //
 {
     int i=0;
     int rd;

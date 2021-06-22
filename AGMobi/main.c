@@ -21,30 +21,15 @@
 
 int main(void) {
     
-    if(!flags.boot)
-    {
-        boot_sec();
-    }
-    
-    read_digital_status(1, 0, 1); //SLAVE / 0 - OUT e 1 - IN / NUM DA SAÍDA
-    
-    
-    if(relay[1].kron_state) reset_dout(1,1);
-    else                    set_dout(1, 1);
-    
-    read_digital_status(1, 0, 1); //SLAVE / 0 - OUT e 1 - IN / NUM DA SAÍDA
-    
-    read_relay_status(2,RELAY_CH1);
-    
-    if(relay[RELAY_CH1].board) open_relay(2,RELAY_CH1);
-    else                       close_relay(2, RELAY_CH1);
-    
-    read_relay_status(2,RELAY_CH1);
-    
     while(1)
-    {
-        if(!date[255].set)
         {
+        if(!flags.boot)
+            {
+            boot_sec();
+            }
+        
+        if(!date[255].set)
+            {
             get_system_date();
             get_PT_date(255);
             
@@ -53,15 +38,15 @@ int main(void) {
                date[254].day   == date[255].day     &&
                date[254].hour  == date[255].hour    &&
                date[254].min   == date[255].min)
-            {
+                {
                 date[255].set = 1;
-            }
+                }
             else
-            {
+                {
                 set_PT_date();
                 date[255].set = 1;
+                }
             }
-        }
         
         alarms[2].state = get_PT_alarm(2);
         /*

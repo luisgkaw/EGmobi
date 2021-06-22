@@ -43,7 +43,7 @@ struct tag_measure
     unsigned int    voltage;
     unsigned int    current;
 };
-extern struct tag_measure measure;
+extern struct tag_measure measure[247];
 
 struct tag_ids
 {
@@ -109,5 +109,12 @@ struct tag_flags
     unsigned int    boot:1;
 };
 extern struct tag_flags flags;
+
+struct tag_charge
+{
+    unsigned int    state:1;
+};
+extern struct tag_charge charge[247];
+
 
 #endif /* global_variables_h */
