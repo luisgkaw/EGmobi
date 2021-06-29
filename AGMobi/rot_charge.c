@@ -42,7 +42,7 @@ void rot_charge(void)
                 charge[cnt.powertag].energy = measure[cnt.powertag].energy - measure[cnt.powertag].start_energy;
                 
                 printf("Recarga encerrada em:\n%02d/%02d/%02d às %02d:%02d\n", date[cnt.powertag].day, date[cnt.powertag].month, date[cnt.powertag].year, date[cnt.powertag].hour, date[cnt.powertag].min);
-                printf("Duração: %d minutos\nEnergia total: %d Wh\n\n", charge[cnt.powertag].duration, charge[cnt.powertag].energy);
+                printf("Duração: %d minutos\nEnergia total: %llu Wh\n\n", charge[cnt.powertag].duration, charge[cnt.powertag].energy);
                 
                 charge[cnt.powertag].state = 0;
                 }

@@ -21,10 +21,6 @@
 
 int main(void) {
     
-    measure[2].energy = read_in_reg_PTL(2, PT_EA_P);
-    measure[2].energy = conv_dec_f(measure[2].energy);
-    
-    
     while(1)
         {
         if(!flags.boot)

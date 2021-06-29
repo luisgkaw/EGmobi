@@ -363,7 +363,7 @@ static inline void set_dout(int slave_num, int port_number)
     rd = modbus_write_bit(ctx, addr, 0x0001);
     if (rd == -1) {
         fprintf(stderr, "%s\n", modbus_strerror(errno));
-        return -1;
+        
     }
     sleep(1);
 }
@@ -393,7 +393,6 @@ static inline void reset_dout(int slave_num, int port_number)
     rd = modbus_write_bit(ctx, addr, 0x0000);
     if (rd == -1) {
         fprintf(stderr, "%s\n", modbus_strerror(errno));
-        return -1;
     }
     sleep(1);
 }
@@ -794,7 +793,6 @@ static inline int read_all_relay_status(int slave_num) //LE O STATUS DE TODOS OS
 
 static inline int get_PT_alarm(int slave_num) //
 {
-    int i=0;
     int rd;
     uint16_t reg_size=0x0001;
     uint16_t tab_reg[1];
